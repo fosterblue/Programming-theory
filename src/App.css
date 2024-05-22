@@ -1,0 +1,33 @@
+.App {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+input {
+    padding: 10px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px;
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+}
+
+li.done {
+    text-decoration: line-through;
+}
