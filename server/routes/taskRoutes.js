@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../Models/task');
+const taskController = require('../controllers/taskController');
+
+router.post('/tasks', taskController.addTask);
+router.get('/tasks', taskController.getTasks);
+router.put('/tasks/:name/complete', taskController.completeTask);
 
 // Получить все задачи
 router.get('/tasks', async (req, res) => {

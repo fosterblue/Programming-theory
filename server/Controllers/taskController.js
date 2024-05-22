@@ -1,41 +1,24 @@
-const TaskService = require('../services/taskService');
+const taskService = require('../services/taskService');
 
-class TaskController {
-    constructor(taskService) {
-        this.taskService = taskService;
+exports.addTask = async (req, res) => {
+    try {
+        const task = await taskService.addTask(req.body.name);
+        res.status(201).send(task);
+    } catch (error) {
+        res.status(400).send({ message: error.message });
     }
+};
 
-    async addTask(req, res) {
-        try {
-            const { name } = req.body;
-            const task = await this.taskService.createTask(name);
-            return res.status(201).json(task);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
+exports.getTasks = async (req, res) => {
+    const tasks = await taskService.getTasks();
+    res.status(200).send(tasks);
+};
+
+exports.completeTask = async (req, res) => {
+    try {
+        const task = await taskService.completeTask(req.params.name);
+        res.status(200).send(task);
+    } catch (error) {
+        res.status(404).send({ message: error.message });
     }
-
-    async completeTask(req, res) {
-        try {
-            const { name } = req.params;
-            const task = await this.taskService.markTaskAsDone(name);
-            if (!task) {
-                return res.status(404).json({ message: 'Task not found' });
-            }
-            return res.status(200).json(task);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
-
-    async getTasks(req, res) {
-        try {
-            const tasks = await this.taskService.getAllTasks();
-            return res.status(200).json(tasks);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
-}
-
-module.exports = new TaskController(new TaskService());
+};

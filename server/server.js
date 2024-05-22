@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const database = require('./services/database');
 const taskRoutes = require('./routes/taskRoutes');
 const path = require('path');
 const { mongoURI, port } = require('../config');
@@ -18,11 +19,6 @@ app.use(express.static(path.join(__dirname, '../client/project-management-client
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/project-management-client/build', 'index.html'));
 });
-
-mongoose.connect(mongoURI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
