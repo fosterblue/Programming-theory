@@ -1,33 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getTasks, addTask, completeTask } from './api';
 import './App.css';
 
 function App() {
     const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState('');
+    const [newTaskName, setNewTaskName] = useState('');
 
     useEffect(() => {
-        axios.get('/api/tasks')
-            .then(response => setTasks(response.data))
-            .catch(error => console.error(error));
+        const fetchTasks = async () => {
+            try {
+                const response = await getTasks();
+                setTasks(response.data);
+            } catch (error) {
+                console.error('Failed to fetch tasks:', error);
+            }
+        };
+        fetchTasks();
     }, []);
 
-    const addTask = () => {
-        axios.post('/api/tasks', { name: newTask })
-            .then(response => setTasks([...tasks, response.data]))
-            .catch(error => console.error(error));
-        setNewTask('');
+    const handleAddTask = async () => {
+        try {
+            const response = await addTask({ name: newTaskName });
+            setTasks([...tasks, response.data]);
+            setNewTaskName('');
+        } catch (error) {
+            console.error('Failed to add task:', error);
+        }
     };
 
-    const completeTask = (name) => {
-        axios.put(`/api/tasks/${name}/complete`)
-            .then(response => {
-                const updatedTasks = tasks.map(task =>
-                    task.name === name ? response.data : task
-                );
-                setTasks(updatedTasks);
-            })
-            .catch(error => console.error(error));
+    const handleCompleteTask = async (name) => {
+        try {
+            const response = await completeTask(name);
+            const updatedTasks = tasks.map(task =>
+                task.name === name ? response.data : task
+            );
+            setTasks(updatedTasks);
+        } catch (error) {
+            console.error('Failed to complete task:', error);
+        }
     };
 
     return (
@@ -35,15 +45,15 @@ function App() {
             <h1>Task Management</h1>
             <input
                 type="text"
-                value={newTask}
-                onChange={e => setNewTask(e.target.value)}
+                value={newTaskName}
+                onChange={e => setNewTaskName(e.target.value)}
             />
-            <button onClick={addTask}>Add Task</button>
+            <button onClick={handleAddTask}>Add Task</button>
             <ul>
                 {tasks.map(task => (
                     <li key={task.name}>
                         {task.name} {task.done ? '(Done)' : ''}
-                        {!task.done && <button onClick={() => completeTask(task.name)}>Complete</button>}
+                        {!task.done && <button onClick={() => handleCompleteTask(task.name)}>Complete</button>}
                     </li>
                 ))}
             </ul>
