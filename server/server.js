@@ -2,16 +2,27 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const taskRoutes = require('./routes/taskRoutes');
-const { mongoURI, port } = require('./config');
+const path = require('path');
+const { mongoURI, port } = require('../config');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use('/api', taskRoutes);
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+// Укажите Express обслуживать статические файлы из папки build
+app.use(express.static(path.join(__dirname, '../client/project-management-client/build')));
+
+
+// Любые другие запросы обрабатывайте, отправляя обратно index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/project-management-client/build', 'index.html'));
+});
+
+mongoose.connect(mongoURI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
