@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  task-service:
+    build: ./task-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - task-db
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - user-db
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3002:3002"
+
+  task-db:
+    image: mongo:4.2
+    container_name: task-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - task-db-data:/data/db
+
+  user-db:
+    image: mongo:4.2
+    container_name: user-db
+    ports:
+      - "27018:27017"
+    volumes:
+      - user-db-data:/data/db
+
+volumes:
+  task-db-data:
+  user-db-data:

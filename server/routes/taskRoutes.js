@@ -7,7 +7,6 @@ router.post('/tasks', taskController.addTask);
 router.get('/tasks', taskController.getTasks);
 router.put('/tasks/:name/complete', taskController.completeTask);
 
-// Получить все задачи
 router.get('/tasks', async (req, res) => {
     try {
         const tasks = await Task.find();
@@ -17,7 +16,6 @@ router.get('/tasks', async (req, res) => {
     }
 });
 
-// Добавить новую задачу
 router.post('/tasks', async (req, res) => {
     const task = new Task({
         name: req.body.name,
@@ -32,7 +30,6 @@ router.post('/tasks', async (req, res) => {
     }
 });
 
-// Обновить задачу как выполненную
 router.put('/tasks/:name/complete', async (req, res) => {
     try {
         const task = await Task.findOne({ name: req.params.name });
